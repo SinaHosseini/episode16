@@ -1,47 +1,10 @@
-import random
+import time
 import arcade
+from ball import Ball
+from rocket import Rocket
 
 
-class Ball(arcade.Sprite):
-    def __init__(self, game):
-        super().__init__()
-        self.center_x = game.width//2
-        self.center_y = game.height//2
-        self.color = arcade.color.GREEN
-        self.radius = 15
-        self.change_x = random.choice([-1, 1])
-        self.change_y = random.choice([-1, 1])
-        self.speed = 3
 
-    def move(self):
-        self.center_x += self.change_x + self.speed
-        self.center_y += self.change_y + self.speed
-
-    def draw(self):
-        arcade.draw_circle_filled(
-            self.center_x, self.center_y, self.radius, self.color)
-
-
-class Rocket(arcade.Sprite):
-    def __init__(self, x, y, c, n):
-        super().__init__()
-        self.center_x = x
-        self.center_y = y
-        self.color = c
-        self.name = n
-        self.change_x = 0
-        self.change_y = 0
-        self.width = 10
-        self.height = 60
-        self.speed = 4
-        self.score = 0
-
-    def move(self):
-        ...
-
-    def draw(self):
-        arcade.draw_rectangle_filled(
-            self.center_x, self.center_y, self.width, self.height, self.color)
 
 
 class Game(arcade.Window):
@@ -63,6 +26,11 @@ class Game(arcade.Window):
         self.player_1.draw()
         self.player_2.draw()
         self.ball.draw()
+        player1_score = f"Your score: {self.player_1.score}"
+        arcade.draw_text(player1_score, 30, 30, arcade.color.WHITE, 12)
+        player2_score = f"Computer score: {self.player_2.score}"
+        arcade.draw_text(player2_score, self.width-170,
+                         30, arcade.color.WHITE, 12)
         arcade.finish_render()
 
     def on_mouse_motion(self, x, y, dx, dy):
@@ -71,6 +39,26 @@ class Game(arcade.Window):
 
     def on_update(self, delta_time):
         self.ball.move()
+        self.player_2.move(self, self.ball)
+
+        if self.ball.center_y < 45 or self.ball.center_y > self.height - 45:
+            self.ball.change_y *= -1
+
+        if arcade.check_for_collision(self.ball, self.player_1) or \
+                arcade.check_for_collision(self.ball, self.player_2):
+            self.ball.change_x *= -1
+
+        if self.ball.center_x < 0:
+            self.player_2.score += 1
+            del self.ball
+            self.ball = Ball(self)
+            time.sleep(1)
+
+        if self.ball.center_x > self.width:
+            self.player_1.score += 1
+            del self.ball
+            self.ball = Ball(self)
+            time.sleep(1)
 
 
 if __name__ == "__main__":
