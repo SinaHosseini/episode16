@@ -4,9 +4,6 @@ from ball import Ball
 from rocket import Rocket
 
 
-
-
-
 class Game(arcade.Window):
     def __init__(self):
         super().__init__(width=720, height=480, title="Pong 🏓")
