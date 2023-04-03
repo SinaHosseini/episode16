@@ -2,9 +2,9 @@ import arcade
 
 
 class Rocket(arcade.Sprite):
-    def __init__(self, game, x, y):
+    def __init__(self, x, y):
         super().__init__()
-        self.center_x = x
+        self.center_x = x//2
         self.center_y = y
         self.color = arcade.color.GRAY
         self.change_x = 0
@@ -16,15 +16,15 @@ class Rocket(arcade.Sprite):
     def draw(self):
         arcade.draw_rectangle_filled(
             self.center_x, self.center_y, self.width, self.height, self.color)
-        
+
     def move(self):
         if self.change_x == 1:
             if self.center_x < self.game.width - 40:
-                self.center_x += self.speed
+                self.center_x += self.change_x * self.speed
 
         elif self.change_x == -1:
             if self.center_x > 40:
-                self.center_x -= self.speed
+                self.center_x -= self.change_x * self.speed
 
 
 class Ball(arcade.Sprite):
@@ -41,7 +41,7 @@ class Game(arcade.Window):
     def __init__(self):
         super().__init__(width=500, height=600, title="Breakout")
         arcade.set_background_color(arcade.color.NAVY_BLUE)
-        self.rocket = Rocket(self, self.width//2, 40)
+        self.rocket = Rocket(self.width, 40)
 
     def on_draw(self):
         arcade.start_render()
@@ -49,9 +49,9 @@ class Game(arcade.Window):
 
         arcade.finish_render()
 
-    def on_mouse_motion(self, x, y, dx, dy):
-        if 40 < x < self.width - 40:
-            self.rocket.center_x = x
+    # def on_mouse_motion(self, x, y, dx, dy):
+        # if 40 < x < self.width - 40:
+        # self.rocket.center_x = x
 
     def on_key_press(self, symbol, modifiers):
         if symbol == arcade.key.RIGHT:
@@ -62,6 +62,9 @@ class Game(arcade.Window):
 
     def on_key_release(self, symbol, modifiers):
         self.rocket.change_x = 0
+
+    def on_update(self, delta_time):
+        self.rocket.move()
 
 
 if __name__ == "__main__":
