@@ -1,4 +1,3 @@
-import random
 import time
 import arcade
 from rocket import Rocket
