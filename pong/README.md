@@ -7,7 +7,7 @@ You must not let the ball pass you
 Move with mouse motion
 
 Game Environment:
-![Game environment](pong/pong_game.png)
+![Game environment](pong/pong_game.png?raw=true)
 
 ## installation
 ```
